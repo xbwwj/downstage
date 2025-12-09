@@ -2,6 +2,10 @@
 name = "downstage"
 version = "0.1.0-alpha.0"
 edition = "2024"
+description = "Chromium automation"
+homepage = "https://github.com/xbwwj/downstage"
+repository = "https://github.com/xbwwj/downstage.git"
+license = "MIT"
 
 [dependencies]
 bon = "3.8.1"
