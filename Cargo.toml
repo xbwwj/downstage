@@ -1,8 +1,9 @@
 [package]
 name = "downstage"
-version = "0.1.0-alpha.0"
+version = "0.1.0-alpha.1"
 edition = "2024"
 description = "Chromium automation"
+documentation = "https://docs.rs/downstage"
 homepage = "https://github.com/xbwwj/downstage"
 repository = "https://github.com/xbwwj/downstage.git"
 license = "MIT"
