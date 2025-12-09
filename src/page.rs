@@ -1,6 +1,6 @@
 use chromiumoxide_cdp::cdp::browser_protocol::target::{CloseTargetParams, TargetId};
 
-use crate::{error::Result, session::CdpSession};
+use crate::{connection::Connection, error::Result, session::CdpSession};
 
 /// Page provides methods to interact with a single tab in browser.
 #[derive(Debug, Clone)]
@@ -22,10 +22,10 @@ impl Page {
 
 impl Drop for Page {
     fn drop(&mut self) {
-        let session = self.session.clone();
+        let connection = self.session.clone();
         let target_id = self.target_id.clone();
         tokio::spawn(async move {
-            _ = session.send(CloseTargetParams { target_id }).await;
+            _ = connection.send(CloseTargetParams { target_id }).await;
         });
     }
 }

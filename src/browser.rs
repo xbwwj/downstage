@@ -12,6 +12,7 @@ use tokio::{
 };
 
 use crate::{
+    connection::Connection,
     error::{Error, Result},
     page::Page,
     session::CdpSession,
@@ -27,7 +28,11 @@ pub struct Browser {
 impl Browser {
     pub async fn launch() -> Result<Browser> {
         let (child, uri) = launch_chromium().await?;
-        let session = CdpSession::connect(&uri).await?;
+        let connection = Connection::connect(&uri).await?;
+        let session = CdpSession {
+            connection,
+            session_id: None,
+        };
         Ok(Self {
             child: Some(Arc::new(child)),
             session,
@@ -35,7 +40,11 @@ impl Browser {
     }
 
     pub async fn connect(uri: &str) -> Result<Self> {
-        let session = CdpSession::connect(uri).await?;
+        let connection = Connection::connect(uri).await?;
+        let session = CdpSession {
+            connection,
+            session_id: None,
+        };
         Ok(Self {
             child: None,
             session,
