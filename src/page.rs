@@ -1,6 +1,6 @@
 use chromiumoxide_cdp::cdp::browser_protocol::{
     dom::{GetDocumentParams, GetDocumentReturns},
-    page,
+    page::{self, NavigateParams},
     target::TargetId,
 };
 
@@ -16,6 +16,19 @@ pub struct Page {
 impl Page {
     pub async fn close(&self) -> Result<()> {
         self.session.send(page::CloseParams {}).await?;
+        Ok(())
+    }
+
+    pub async fn goto(&self, url: &str) -> Result<()> {
+        self.session
+            .send(NavigateParams {
+                url: url.to_string(),
+                referrer: None,
+                transition_type: None,
+                frame_id: None,
+                referrer_policy: None,
+            })
+            .await?;
         Ok(())
     }
 
