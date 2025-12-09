@@ -2,7 +2,9 @@ use std::{process::Stdio, sync::Arc, time::Duration};
 
 use chromiumoxide_cdp::cdp::browser_protocol::{
     browser::{CloseParams, GetVersionParams, GetVersionReturns},
-    target::CreateTargetParams,
+    target::{
+        AttachToTargetParams, AttachToTargetReturns, CreateTargetParams, CreateTargetReturns,
+    },
 };
 use regex::Regex;
 use tokio::{
@@ -61,16 +63,23 @@ impl Browser {
     }
 
     pub async fn new_page(&self) -> Result<Page> {
-        let returns = self
+        let CreateTargetReturns { target_id } = self
             .session
             .send(CreateTargetParams {
                 url: "".into(),
                 ..Default::default()
             })
             .await?;
+        let AttachToTargetReturns { session_id } = self
+            .session
+            .send(AttachToTargetParams {
+                target_id: target_id.clone(),
+                flatten: Some(true),
+            })
+            .await?;
         Ok(Page {
-            target_id: returns.target_id,
-            session: self.session.clone(),
+            target_id,
+            session: self.session.with_session_id(Some(session_id.into())),
         })
     }
 }
