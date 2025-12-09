@@ -1,5 +1,6 @@
 use chromiumoxide_cdp::cdp::browser_protocol::{
     dom::{GetDocumentParams, GetDocumentReturns},
+    input::{DispatchMouseEventParams, DispatchMouseEventType},
     page::{self, NavigateParams},
     target::TargetId,
 };
@@ -16,6 +17,30 @@ pub struct Page {
 impl Page {
     pub async fn close(&self) -> Result<()> {
         self.session.send(page::CloseParams {}).await?;
+        Ok(())
+    }
+
+    /// TODO: should not expose
+    pub async fn move_mouse(&self, x: f64, y: f64) -> Result<()> {
+        self.session
+            .send(DispatchMouseEventParams::new(
+                DispatchMouseEventType::MouseMoved,
+                x,
+                y,
+            ))
+            .await?;
+        Ok(())
+    }
+
+    /// TODO: should not expose
+    pub async fn click(&self, x: f64, y: f64) -> Result<()> {
+        self.session
+            .send(DispatchMouseEventParams::new(
+                DispatchMouseEventType::MousePressed,
+                x,
+                y,
+            ))
+            .await?;
         Ok(())
     }
 
